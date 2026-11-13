@@ -1,0 +1,33 @@
+# ── Dependencies ─────────────────────────────────────────────
+node_modules/
+
+# Enforce Bun-only workflow (no npm artifacts)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# ── Build outputs ────────────────────────────────────────────
+dist/
+builder-debug.yml
+builder-effective-config.yaml
+
+# Compiled C# launcher artifact (built from launcher.cs via build-launcher.bat)
+TurboDM.exe
+
+# ── Runtime-downloaded binaries ──────────────────────────────
+# bin/ holds the yt-dlp binary; engine/ytdlp.js auto-downloads and
+# SHA-256-verifies it on demand, so binaries stay out of version control.
+bin/
+temp/
+
+# ── Embedded experiment repo (removed in Milestone 4) ────────
+scratch/
+
+# ── Logs & OS cruft ──────────────────────────────────────────
+*.log
+.DS_Store
+Thumbs.db
+
+# ── Local workspace config ───────────────────────────────────
+.zcode/
+/screenshots/

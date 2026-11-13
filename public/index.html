@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' https: data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+    <title>TurboDM - Ultra-Fast Download Manager</title>
+    <link rel="stylesheet" href="style.css">
+
+    <link rel="stylesheet" href="fonts.css">
+</head>
+<body class="has-titlebar-overlay">
+    <div class="window-shell">
+
+        <header class="titlebar" id="appTitlebar">
+            <div class="titlebar-drag-region">
+                <div class="titlebar-brand">
+                    <span class="brand-icon">
+                        <svg class="brand-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                        </svg>
+                    </span>
+                    <span class="brand-text">Turbo<strong>DM</strong></span>
+                </div>
+            </div>
+            <div class="titlebar-actions">
+                <button class="theme-toggle-btn" id="themeToggleBtn" title="Toggle Theme (Dark / Light)">
+                    <svg class="theme-svg theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    <svg class="theme-svg theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="window-controls" id="windowControls">
+                <button class="win-btn win-min" id="winMinBtn" title="Minimize">
+                    <svg viewBox="0 0 12 12"><line x1="2" y1="6" x2="10" y2="6" stroke="currentColor" stroke-width="1.2"/></svg>
+                </button>
+                <button class="win-btn win-max" id="winMaxBtn" title="Maximize">
+                    <svg viewBox="0 0 12 12"><rect x="2" y="2" width="8" height="8" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
+                </button>
+                <button class="win-btn win-close" id="winCloseBtn" title="Close">
+                    <svg viewBox="0 0 12 12"><line x1="2.5" y1="2.5" x2="9.5" y2="9.5" stroke="currentColor" stroke-width="1.2"/><line x1="9.5" y1="2.5" x2="2.5" y2="9.5" stroke="currentColor" stroke-width="1.2"/></svg>
+                </button>
+            </div>
+        </header>
+
+
+        <nav class="idm-toolbar" id="appToolbar">
+            <div class="toolbar-actions">
+                <button class="tool-action-btn primary" id="toolAddBtn" title="Add new download URL">
+                    <span class="tool-btn-icon">
+                        <svg class="tool-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    </span>
+                    <span class="tool-btn-label">Add URL</span>
+                </button>
+                <div class="tool-sep"></div>
+                <button class="tool-action-btn" id="toolResumeBtn" disabled title="Resume selected download">
+                    <span class="tool-btn-icon">
+                        <svg class="tool-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                    </span>
+                    <span class="tool-btn-label">Resume</span>
+                </button>
+                <button class="tool-action-btn" id="toolPauseBtn" disabled title="Pause selected download">
+                    <span class="tool-btn-icon">
+                        <svg class="tool-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+                    </span>
+                    <span class="tool-btn-label">Pause</span>
+                </button>
+                <button class="tool-action-btn" id="toolStopAllBtn" title="Stop all active downloads">
+                    <span class="tool-btn-icon">
+                        <svg class="tool-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"></rect></svg>
+                    </span>
+                    <span class="tool-btn-label">Stop All</span>
+                </button>
+                <button class="tool-action-btn danger" id="toolDeleteBtn" disabled title="Delete selected download">
+                    <span class="tool-btn-icon">
+                        <svg class="tool-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                    </span>
+                    <span class="tool-btn-label">Delete</span>
+                </button>
+                <div class="tool-sep"></div>
+                <button class="tool-action-btn" id="toolOpenFolderBtn" disabled title="Open destination folder">
+                    <span class="tool-btn-icon">
+                        <svg class="tool-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                    </span>
+                    <span class="tool-btn-label">Folder</span>
+                </button>
+                <button class="tool-action-btn" id="toolOpenFileBtn" disabled title="Open / Run downloaded file">
+                    <span class="tool-btn-icon">
+                        <svg class="tool-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
+                    </span>
+                    <span class="tool-btn-label">Open</span>
+                </button>
+                <button class="tool-action-btn" id="toolClearDoneBtn" title="Clear completed tasks from list">
+                    <span class="tool-btn-icon">
+                        <svg class="tool-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path></svg>
+                    </span>
+                    <span class="tool-btn-label">Clear Done</span>
+                </button>
+                <div class="tool-sep"></div>
+                <button class="tool-action-btn" id="toolCookiesBtn" title="Manage cookie profiles for yt-dlp downloads">
+                    <span class="tool-btn-icon">
+                        <svg class="tool-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5"></path><circle cx="8.5" cy="8.5" r="1.5"></circle><circle cx="8" cy="15" r="1"></circle><circle cx="14" cy="14" r="1.5"></circle></svg>
+                    </span>
+                    <span class="tool-btn-label">Cookies</span>
+                </button>
+                <button class="tool-action-btn" id="toolSettingsBtn" title="Settings (Ctrl+,)">
+                    <span class="tool-btn-icon">
+                        <svg class="tool-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    </span>
+                    <span class="tool-btn-label">Settings</span>
+                </button>
+                <button class="tool-action-btn" id="toolHelpBtn" title="Help &amp; Shortcuts (F1)">
+                    <span class="tool-btn-icon">
+                        <svg class="tool-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                    </span>
+                    <span class="tool-btn-label">Help</span>
+                </button>
+            </div>
+
+
+            <div class="engine-banner" id="engineBanner" style="display:none;">
+                <span id="engineBannerText">yt-dlp engine unavailable</span>
+                <button class="btn btn-secondary btn-sm" id="engineBannerRetry">Retry</button>
+            </div>
+
+
+            <div class="toolbar-speed-widget" id="speedWidget">
+                <span class="speed-pulse-dot"></span>
+                <div class="speed-content">
+                    <span class="speed-label">SPEED</span>
+                    <span class="speed-value" id="globalSpeed">0.00 MB/s</span>
+                </div>
+            </div>
+        </nav>
+
+
+        <section class="quick-strip">
+            <div class="quick-input-group">
+                <span class="quick-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                </span>
+                <input type="text" id="quickUrlInput" placeholder="Quick Download: Paste URL here and press Enter..." autocomplete="off" spellcheck="false">
+                <button class="btn btn-primary" id="quickStartBtn">Download</button>
+            </div>
+            <div class="search-group">
+                <span class="search-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                </span>
+                <input type="text" id="searchInput" placeholder="Search downloads...">
+                <button class="search-clear-btn" id="searchClearBtn" style="display:none;" title="Clear search">✕</button>
+            </div>
+        </section>
+
+
+        <main class="main-split">
+
+            <aside class="idm-sidebar">
+                <div class="sidebar-section">
+                    <div class="sidebar-heading">STATUS</div>
+                    <ul class="sidebar-tree">
+                        <li class="tree-item active" data-filter="all">
+                            <span class="tree-icon">
+                                <svg class="tree-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                            </span>
+                            <span class="tree-label">All Downloads</span>
+                            <span class="tree-badge" id="countAll">0</span>
+                        </li>
+                        <li class="tree-item" data-filter="active">
+                            <span class="tree-icon">
+                                <svg class="tree-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg>
+                            </span>
+                            <span class="tree-label">Downloading</span>
+                            <span class="tree-badge badge-active" id="countActive">0</span>
+                        </li>
+                        <li class="tree-item" data-filter="paused">
+                            <span class="tree-icon">
+                                <svg class="tree-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="10" y1="15" x2="10" y2="9"></line><line x1="14" y1="15" x2="14" y2="9"></line></svg>
+                            </span>
+                            <span class="tree-label">Paused</span>
+                            <span class="tree-badge" id="countPaused">0</span>
+                        </li>
+                        <li class="tree-item" data-filter="completed">
+                            <span class="tree-icon">
+                                <svg class="tree-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                            </span>
+                            <span class="tree-label">Completed</span>
+                            <span class="tree-badge" id="countCompleted">0</span>
+                        </li>
+                        <li class="tree-item" data-filter="failed">
+                            <span class="tree-icon">
+                                <svg class="tree-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                            </span>
+                            <span class="tree-label">Failed / Stopped</span>
+                            <span class="tree-badge" id="countFailed">0</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-section">
+                    <div class="sidebar-heading">CATEGORIES</div>
+                    <ul class="sidebar-tree">
+                        <li class="tree-item" data-category="compressed">
+                            <span class="tree-icon">
+                                <svg class="tree-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="22" height="5"></rect><line x1="10" y1="12" x2="14" y2="12"></line></svg>
+                            </span>
+                            <span class="tree-label">Compressed</span>
+                            <span class="tree-badge" id="countCompressed">0</span>
+                        </li>
+                        <li class="tree-item" data-category="video">
+                            <span class="tree-icon">
+                                <svg class="tree-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line><line x1="2" y1="7" x2="7" y2="7"></line><line x1="2" y1="17" x2="7" y2="17"></line><line x1="17" y1="17" x2="22" y2="17"></line><line x1="17" y1="7" x2="22" y2="7"></line></svg>
+                            </span>
+                            <span class="tree-label">Videos</span>
+                            <span class="tree-badge" id="countVideo">0</span>
+                        </li>
+                        <li class="tree-item" data-category="audio">
+                            <span class="tree-icon">
+                                <svg class="tree-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+                            </span>
+                            <span class="tree-label">Music</span>
+                            <span class="tree-badge" id="countMusic">0</span>
+                        </li>
+                        <li class="tree-item" data-category="application">
+                            <span class="tree-icon">
+                                <svg class="tree-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>
+                            </span>
+                            <span class="tree-label">Programs</span>
+                            <span class="tree-badge" id="countPrograms">0</span>
+                        </li>
+                        <li class="tree-item" data-category="document">
+                            <span class="tree-icon">
+                                <svg class="tree-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                            </span>
+                            <span class="tree-label">Documents</span>
+                            <span class="tree-badge" id="countDocuments">0</span>
+                        </li>
+                        <li class="tree-item" data-category="image">
+                            <span class="tree-icon">
+                                <svg class="tree-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                            </span>
+                            <span class="tree-label">Images</span>
+                            <span class="tree-badge" id="countImages">0</span>
+                        </li>
+                        <li class="tree-item" data-category="other">
+                            <span class="tree-icon">
+                                <svg class="tree-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                            </span>
+                            <span class="tree-label">General</span>
+                            <span class="tree-badge" id="countGeneral">0</span>
+                        </li>
+                    </ul>
+                </div>
+            </aside>
+
+
+            <section class="table-workspace">
+                <div class="table-scroller">
+                    <table class="idm-table" id="tasksTable">
+                        <thead>
+                            <tr>
+                                <th class="col-filename">File Name</th>
+                                <th class="col-size">Size</th>
+                                <th class="col-status">Status</th>
+                                <th class="col-progress">Progress</th>
+                                <th class="col-speed">Speed</th>
+                                <th class="col-eta">Time Left</th>
+                                <th class="col-channels">Threads</th>
+                                <th class="col-actions">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tasksTableBody">
+
+                        </tbody>
+                    </table>
+
+
+                    <div class="empty-state" id="emptyState">
+                        <div class="empty-icon-wrap">
+                            <svg class="empty-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                        </div>
+                        <h3>No downloads in this view</h3>
+                        <p>Drop URLs or <code>.txt</code> link lists here, or paste above to download.</p>
+                        <div class="empty-drop-hint">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                            <span>Drag and drop links anywhere</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+
+        <footer class="statusbar">
+            <div class="statusbar-left">
+                <span class="status-dot"></span>
+                <span id="statusSummary">0 Active Downloads</span>
+            </div>
+            <div class="statusbar-center">
+                <span class="author-credits">Made with ❤️ by <strong>Rishad</strong> (<a href="#" id="authorGithub" title="GitHub Profile">GitHub</a> • <a href="#" id="authorDiscord" title="Discord Profile">Discord</a>)</span>
+            </div>
+            <div class="statusbar-right">
+                <span class="statusbar-item" id="defaultDirDisplay" title="Default Base Downloads Directory">
+                    <svg class="status-folder-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                    <span class="dir-name">Downloads</span>
+                </span>
+            </div>
+        </footer>
+
+
+        <div class="modal-backdrop" id="addModal">
+            <div class="modal-card">
+                <div class="modal-header">
+                    <div class="modal-title-wrap">
+                        <span class="modal-header-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                        </span>
+                        <h3>Add New Download</h3>
+                    </div>
+                    <button class="modal-close" id="modalCloseBtn" title="Close (Esc)" aria-label="Close">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Address (URL)</label>
+                        <div class="input-with-action">
+                            <input type="text" id="modalUrlInput" placeholder="https://example.com/filename.zip" autocomplete="off">
+                            <button class="btn btn-secondary" id="probeUrlBtn">Inspect</button>
+                        </div>
+                        <div class="input-hint-row">
+                            <span class="input-hint-text">Direct files &amp; 1,700+ streaming sites supported.</span>
+                            <button class="btn-link-action" id="addSupportedSitesBtn" type="button">Supported Sites (1,700+) →</button>
+                        </div>
+                    </div>
+
+
+                    <div class="probed-card" id="probedCard" style="display: none;">
+                        <img class="probed-thumb" id="probedThumb" alt="" style="display:none;">
+                        <div class="probed-rows">
+                            <div class="probed-row" id="probedMetaRow" style="display:none;">
+                                <span class="probed-label">Info:</span>
+                                <span class="probed-val" id="probedMeta">—</span>
+                            </div>
+                            <div class="probed-row">
+                                <span class="probed-label">File:</span>
+                                <span class="probed-val" id="probedFileName">—</span>
+                            </div>
+                            <div class="probed-row">
+                                <span class="probed-label">Size:</span>
+                                <span class="probed-val" id="probedSize">—</span>
+                            </div>
+                            <div class="probed-row">
+                                <span class="probed-label">Category:</span>
+                                <span class="probed-val" id="probedCategory">—</span>
+                            </div>
+                            <div class="probed-row">
+                                <span class="probed-label">Save Folder:</span>
+                                <span class="probed-val" id="probedFolder">—</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="probe-error" id="probeError" style="display:none;"></div>
+
+
+                    <div class="form-group">
+                        <label>Cookies (for sites that require login)</label>
+                        <div class="input-with-action">
+                            <select id="modalCookieSelect" class="form-select">
+                                <option value="default">Use default profile</option>
+                                <option value="none">No cookies</option>
+                            </select>
+                            <button class="btn btn-secondary" id="modalManageCookiesBtn">Manage…</button>
+                        </div>
+                    </div>
+
+
+                    <div id="ytOptionsSection" style="display:none;">
+                        <div class="form-group">
+                            <label>Format / Quality</label>
+                            <select id="modalFormatSelect" class="form-select"></select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Save As File Name (Optional)</label>
+                        <input type="text" id="modalFileNameInput" placeholder="Auto-detected">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Save Destination</label>
+                        <div class="input-with-action">
+                            <input type="text" id="modalSaveDirInput" readonly>
+                            <button class="btn btn-secondary" id="browseDirBtn">Browse...</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-ghost" id="modalCancelBtn">Cancel</button>
+                    <button class="btn btn-primary" id="modalStartBtn">Download Now</button>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal-backdrop" id="deleteModal">
+            <div class="modal-card modal-sm">
+                <div class="modal-header">
+                    <div class="modal-title-wrap">
+                        <span class="modal-header-icon icon-danger">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                        </span>
+                        <h3>Delete Download</h3>
+                    </div>
+                    <button class="modal-close" id="deleteModalCloseBtn" title="Close (Esc)" aria-label="Close">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to remove <strong id="deleteTaskTitle">this download</strong> from the list?</p>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="deleteFileCheckbox">
+                        <span>Also permanently delete downloaded file from disk</span>
+                    </label>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-ghost" id="deleteCancelBtn">Cancel</button>
+                    <button class="btn btn-danger" id="deleteConfirmBtn">Delete</button>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal-backdrop" id="cookieModal">
+            <div class="modal-card modal-lg">
+                <div class="modal-header">
+                    <div class="modal-title-wrap">
+                        <span class="modal-header-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
+                        </span>
+                        <h3>Cookie Profiles</h3>
+                    </div>
+                    <button class="modal-close" id="cookieModalCloseBtn" title="Close (Esc)" aria-label="Close">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="notice-banner warning">
+                        <svg class="notice-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                        <span id="cookieNoticeText">Cookie files grant full access to the accounts they were exported from. TurboDM stores them only inside this app's user-data folder.</span>
+                    </div>
+
+                    <div class="cookie-actions">
+                        <button class="btn btn-secondary" id="cookieImportBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                            Import cookies.txt…
+                        </button>
+                        <button class="btn btn-secondary" id="cookiePasteBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+                            Paste cookies…
+                        </button>
+                        <button class="btn btn-secondary" id="cookieBrowserBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                            Add from browser…
+                        </button>
+                    </div>
+
+
+                    <div class="cookie-add-area" id="cookiePasteArea" style="display:none;">
+                        <div class="form-group">
+                            <label>Profile name</label>
+                            <input type="text" id="cookiePasteName" placeholder="e.g. YouTube main account">
+                        </div>
+                        <div class="form-group">
+                            <label>Netscape cookies.txt content</label>
+                            <textarea id="cookiePasteContent" class="cookie-textarea" placeholder="# Netscape HTTP Cookie File
+.youtube.com	TRUE	/	TRUE	1900000000	NAME	value" spellcheck="false"></textarea>
+                        </div>
+                        <div class="cookie-add-buttons">
+                            <button class="btn btn-primary" id="cookiePasteSaveBtn">Save Profile</button>
+                            <button class="btn btn-ghost" id="cookiePasteCancelBtn">Cancel</button>
+                        </div>
+                    </div>
+
+
+                    <div class="cookie-add-area" id="cookieBrowserArea" style="display:none;">
+                        <div class="form-group">
+                            <label>Profile name</label>
+                            <input type="text" id="cookieBrowserName" placeholder="e.g. My Edge profile">
+                        </div>
+                        <div class="form-group">
+                            <label>Browser</label>
+                            <select id="cookieBrowserSelect" class="form-select">
+                                <option value="chrome">Chrome</option>
+                                <option value="edge">Edge</option>
+                                <option value="firefox">Firefox</option>
+                                <option value="brave">Brave</option>
+                                <option value="chromium">Chromium</option>
+                                <option value="opera">Opera</option>
+                                <option value="vivaldi">Vivaldi</option>
+                                <option value="safari">Safari</option>
+                                <option value="whale">Whale</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Browser profile name (optional)</label>
+                            <input type="text" id="cookieBrowserProfile" placeholder="e.g. Profile 2">
+                        </div>
+                        <div class="notice-banner info">
+                            <svg class="notice-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                            <span>Close the browser completely before downloading, or cookie extraction may fail. Newer Chrome/Edge may block external cookie reads — import a cookies.txt instead.</span>
+                        </div>
+                        <div class="cookie-add-buttons">
+                            <button class="btn btn-primary" id="cookieBrowserSaveBtn">Save Profile</button>
+                            <button class="btn btn-ghost" id="cookieBrowserCancelBtn">Cancel</button>
+                        </div>
+                    </div>
+
+                    <div class="cookie-list" id="cookieProfileList">
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-ghost" id="cookieDoneBtn">Done</button>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal-backdrop" id="settingsModal">
+            <div class="modal-card modal-lg">
+                <div class="modal-header">
+                    <div class="modal-title-wrap">
+                        <span class="modal-header-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                        </span>
+                        <h3>Settings</h3>
+                        <span class="unsaved-badge" id="settingsDirtyBadge" style="display:none;">
+                            <span class="unsaved-dot"></span> Unsaved Changes
+                        </span>
+                    </div>
+                    <button class="modal-close" id="settingsModalCloseBtn" title="Close (Esc)" aria-label="Close">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="settings-section">
+                        <h4>Appearance &amp; Display</h4>
+                        <div class="settings-grid">
+                            <label>Interface Theme</label>
+                            <select id="setTheme" class="form-select">
+                                <option value="system">System (Match OS)</option>
+                                <option value="dark">Dark Theme</option>
+                                <option value="light">Light Theme</option>
+                            </select>
+                            <label>Reduce Transparency</label>
+                            <div class="checkbox-control">
+                                <input type="checkbox" id="setReduceTransparency">
+                                <span class="settings-subtext">Turns off blurred glass surfaces for higher performance</span>
+                            </div>
+                            <label>Clipboard Monitoring</label>
+                            <div class="checkbox-control">
+                                <input type="checkbox" id="setDetectClipboard">
+                                <span class="settings-subtext">Prompt to download when a URL is copied to clipboard</span>
+                            </div>
+                            <label>Close Window Behavior</label>
+                            <div class="checkbox-control">
+                                <input type="checkbox" id="setCloseToTray">
+                                <span class="settings-subtext">Keep TurboDM running in system tray on close</span>
+                            </div>
+                            <label>First-Run Tour</label>
+                            <button class="btn btn-secondary btn-sm" id="btnLaunchOnboarding" type="button">Launch Welcome Tour…</button>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h4>Downloads</h4>
+                        <div class="settings-grid">
+                            <label>Default save folder</label>
+                            <div class="input-with-action">
+                                <input type="text" id="setSaveDir">
+                                <button class="btn btn-secondary" id="setBrowseDirBtn">Browse…</button>
+                            </div>
+                            <label>Max concurrent downloads</label>
+                            <input type="number" id="setMaxConcurrent" min="1" max="10">
+                            <label>Max connections per download</label>
+                            <input type="number" id="setMaxConnections" min="1" max="64">
+                            <label>Concurrent fragments (yt-dlp)</label>
+                            <input type="number" id="setFragments" min="1" max="32">
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h4>Video (yt-dlp)</h4>
+                        <div class="settings-grid">
+                            <label>Preferred container</label>
+                            <select id="setPreferredFormat" class="form-select">
+                                <option value="mp4">MP4</option>
+                                <option value="mkv">MKV</option>
+                                <option value="webm">WebM</option>
+                            </select>
+                            <label>Default quality</label>
+                            <select id="setDefaultQuality" class="form-select">
+                                <option value="best">Best available (max resolution, efficient codecs)</option>
+                                <option value="max">Highest quality (max resolution + max bitrate)</option>
+                                <option value="2160">2160p (4K) cap</option>
+                                <option value="1440">1440p cap</option>
+                                <option value="1080">1080p cap</option>
+                                <option value="720">720p cap</option>
+                                <option value="480">480p cap</option>
+                                <option value="360">360p cap</option>
+                                <option value="audio">Audio only</option>
+                            </select>
+                            <label>Default cookie profile</label>
+                            <select id="setDefaultCookie" class="form-select">
+                                <option value="">(none)</option>
+                            </select>
+                            <label>Always ask before video downloads</label>
+                            <input type="checkbox" id="setAlwaysAsk">
+                            <label>Embed thumbnail</label>
+                            <input type="checkbox" id="setEmbedThumb">
+                            <label>Embed metadata</label>
+                            <input type="checkbox" id="setEmbedMeta">
+                            <label>Speed limit (e.g. 2M, blank = off)</label>
+                            <input type="text" id="setLimitRate" placeholder="2M">
+                            <label>Proxy (http/socks, blank = off)</label>
+                            <input type="text" id="setProxy" placeholder="socks5://127.0.0.1:9050">
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h4>yt-dlp Engine</h4>
+                        <div class="settings-grid">
+                            <label>Status</label>
+                            <span id="ytdlpStatusLine" class="status-line">checking…</span>
+                            <label>Update channel</label>
+                            <select id="setYtdlpChannel" class="form-select">
+                                <option value="stable">Stable</option>
+                                <option value="nightly">Nightly (fixes site changes fastest)</option>
+                                <option value="master">Master</option>
+                            </select>
+                            <label>Auto-update on startup</label>
+                            <input type="checkbox" id="setAutoUpdate">
+                            <label>Update</label>
+                            <button class="btn btn-secondary" id="ytdlpUpdateBtn">Check &amp; Update</button>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h4>Bun Runtime</h4>
+                        <div class="settings-grid">
+                            <label>Status</label>
+                            <span id="bunStatusLine" class="status-line">checking…</span>
+                            <label>Upgrade</label>
+                            <button class="btn btn-secondary" id="bunUpdateBtn" type="button">Check &amp; Upgrade Bun</button>
+                        </div>
+                    </div>
+
+                    <div class="settings-error" id="settingsError" style="display:none;"></div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-ghost" id="settingsCancelBtn">Cancel</button>
+                    <button class="btn btn-primary" id="settingsSaveBtn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        Save Settings
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal-backdrop" id="smartModal">
+            <div class="modal-card">
+                <div class="modal-header">
+                    <div class="modal-title-wrap">
+                        <span class="modal-header-icon icon-accent">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        </span>
+                        <h3 id="smartModalTitle">Smart Download</h3>
+                    </div>
+                    <button class="modal-close" id="smartCloseBtn" title="Close (Esc)" aria-label="Close">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <div id="smartCookiePhase">
+                        <p class="settings-hint">This video page may require login or cookies to access highest resolutions. Choose cookies to use:</p>
+                        <div class="form-group">
+                            <label>Cookies</label>
+                            <div class="input-with-action">
+                                <select id="smartCookieSelect" class="form-select">
+                                    <option value="default">Use default profile</option>
+                                    <option value="none">No cookies</option>
+                                </select>
+                                <button class="btn btn-secondary" id="smartManageBtn">Manage…</button>
+                            </div>
+                        </div>
+                        <div class="probe-error" id="smartCookieError" style="display:none;"></div>
+                    </div>
+
+
+                    <div id="smartQualityPhase" style="display:none;">
+                        <div class="probed-card" id="smartProbedCard" style="display:none;">
+                            <img class="probed-thumb" id="smartThumb" alt="" style="display:none;">
+                            <div class="probed-rows">
+                                <div class="probed-row">
+                                    <span class="probed-label">Title:</span>
+                                    <span class="probed-val" id="smartTitleVal">—</span>
+                                </div>
+                                <div class="probed-row">
+                                    <span class="probed-label">Channel:</span>
+                                    <span class="probed-val" id="smartUploader">—</span>
+                                </div>
+                                <div class="probed-row">
+                                    <span class="probed-label">Duration:</span>
+                                    <span class="probed-val" id="smartDuration">—</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Quality / Format</label>
+                            <select id="smartFormatSelect" class="form-select"></select>
+                        </div>
+                        <div class="probe-error" id="smartQualityError" style="display:none;"></div>
+                    </div>
+
+                    <div class="loading-note" id="smartLoading" style="display:none;">
+                        <div class="spinner-sm"></div>
+                        <span>Analyzing stream with yt-dlp… this may take a few seconds</span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-ghost" id="smartBackBtn" style="display:none;">← Back</button>
+                    <button class="btn btn-ghost" id="smartCancelBtn">Cancel</button>
+                    <button class="btn btn-primary" id="smartNextBtn">Continue</button>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal-backdrop" id="helpModal">
+            <div class="modal-card modal-lg">
+                <div class="modal-header">
+                    <div class="modal-title-wrap">
+                        <span class="modal-header-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                        </span>
+                        <h3>Help &amp; Keyboard Shortcuts</h3>
+                    </div>
+                    <button class="modal-close" id="helpModalCloseBtn" title="Close (Esc)" aria-label="Close">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="help-section">
+                        <h4>Keyboard Shortcuts</h4>
+                        <div class="shortcuts-grid">
+                            <div class="shortcut-item">
+                                <span class="shortcut-desc">Add new download URL</span>
+                                <div class="shortcut-keys"><kbd>Ctrl</kbd> + <kbd>N</kbd></div>
+                            </div>
+                            <div class="shortcut-item">
+                                <span class="shortcut-desc">Pause / Resume selected</span>
+                                <div class="shortcut-keys"><kbd>Space</kbd></div>
+                            </div>
+                            <div class="shortcut-item">
+                                <span class="shortcut-desc">Open downloaded file</span>
+                                <div class="shortcut-keys"><kbd>Enter</kbd></div>
+                            </div>
+                            <div class="shortcut-item">
+                                <span class="shortcut-desc">Delete selected download</span>
+                                <div class="shortcut-keys"><kbd>Delete</kbd></div>
+                            </div>
+                            <div class="shortcut-item">
+                                <span class="shortcut-desc">Navigate task list</span>
+                                <div class="shortcut-keys"><kbd>↑</kbd> <kbd>↓</kbd></div>
+                            </div>
+                            <div class="shortcut-item">
+                                <span class="shortcut-desc">Open Settings</span>
+                                <div class="shortcut-keys"><kbd>Ctrl</kbd> + <kbd>,</kbd></div>
+                            </div>
+                            <div class="shortcut-item">
+                                <span class="shortcut-desc">Close any dialog or menu</span>
+                                <div class="shortcut-keys"><kbd>Esc</kbd></div>
+                            </div>
+                            <div class="shortcut-item">
+                                <span class="shortcut-desc">Open Help &amp; Shortcuts</span>
+                                <div class="shortcut-keys"><kbd>F1</kbd> or <kbd>?</kbd></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="help-section">
+                        <h4>Acceleration &amp; Features</h4>
+                        <div class="tips-grid">
+                            <div class="tip-card">
+                                <div class="tip-icon">⚡</div>
+                                <div class="tip-content">
+                                    <strong>Multi-Segment Engine</strong>
+                                    <p>TurboDM splits direct file downloads into up to 32 parallel chunk threads for maximum bandwidth.</p>
+                                </div>
+                            </div>
+                            <div class="tip-card">
+                                <div class="tip-icon">🎬</div>
+                                <div class="tip-content">
+                                    <strong>Smart Video Streams</strong>
+                                    <p>Paste stream URLs into the Quick bar to inspect resolutions, grab audio, or download via Cookie Profiles.</p>
+                                </div>
+                            </div>
+                            <div class="tip-card">
+                                <div class="tip-icon">📂</div>
+                                <div class="tip-content">
+                                    <strong>Drag &amp; Drop Ingestion</strong>
+                                    <p>Drop URLs or text files containing multiple links anywhere onto the window to queue downloads instantly.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="help-section">
+                        <h4>Supported Streaming Sites</h4>
+                        <div class="help-action-row">
+                            <span>Browse 1,700+ video and audio services compatible with TurboDM.</span>
+                            <button class="btn btn-secondary btn-sm" id="helpSupportedSitesBtn" type="button">Supported Sites (1,700+)</button>
+                        </div>
+                    </div>
+
+                    <div class="help-section">
+                        <h4>Welcome Tour</h4>
+                        <div class="help-action-row">
+                            <span>Want to walk through the welcome walkthrough again?</span>
+                            <button class="btn btn-secondary btn-sm" id="helpRerunOnboardingBtn" type="button">Launch Welcome Tour</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" id="helpDoneBtn">Got It</button>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal-backdrop" id="onboardingModal">
+            <div class="modal-card modal-lg onboarding-card">
+                <div class="modal-header">
+                    <div class="modal-title-wrap">
+                        <span class="modal-header-icon icon-accent">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                        </span>
+                        <h3>Welcome to TurboDM</h3>
+                    </div>
+                    <button class="modal-close" id="onboardingCloseBtn" title="Skip (Esc)" aria-label="Close">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+
+                <div class="onboarding-steps-indicator">
+                    <div class="step-dot active" id="onboardStepDot1"><span>1</span> Welcome</div>
+                    <div class="step-divider"></div>
+                    <div class="step-dot" id="onboardStepDot2"><span>2</span> Save Folder</div>
+                    <div class="step-divider"></div>
+                    <div class="step-dot" id="onboardStepDot3"><span>3</span> Appearance</div>
+                    <div class="step-divider"></div>
+                    <div class="step-dot" id="onboardStepDot4"><span>4</span> Ready</div>
+                </div>
+
+                <div class="modal-body onboarding-body">
+
+                    <div class="onboarding-step-content" id="onboardStep1">
+                        <div class="onboard-hero">
+                            <div class="onboard-logo-wrap">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                            </div>
+                            <h2>Welcome to TurboDM</h2>
+                            <p class="onboard-subtitle">Fast, multi connection download manager.</p>
+                        </div>
+                        <div class="onboard-features">
+                            <div class="feature-item">
+                                <div class="feature-icon">⚡</div>
+                                <div class="feature-text">
+                                    <strong>Multi-Segment Acceleration</strong>
+                                    <span>Splits direct downloads into parallel connections to maximize your download speed.</span>
+                                </div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">🎬</div>
+                                <div class="feature-text">
+                                    <strong>Video &amp; Audio Grabber</strong>
+                                    <span>Inspect and download video up to 4K, extract audio (MP3/M4A), and save playlists.</span>
+                                </div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">🔄</div>
+                                <div class="feature-text">
+                                    <strong>Pause &amp; Resume Support</strong>
+                                    <span>Automatically resume interrupted or paused downloads without starting over.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="onboarding-step-content" id="onboardStep2" style="display:none;">
+                        <div class="onboard-step-head">
+                            <h3>Default Download Directory</h3>
+                            <p>Select where downloaded files will be saved. Files are automatically organized into category folders.</p>
+                        </div>
+                        <div class="form-group" style="margin-top: 18px;">
+                            <label>Default Save Folder</label>
+                            <div class="input-with-action">
+                                <input type="text" id="onboardSaveDir">
+                                <button class="btn btn-secondary" id="onboardBrowseDirBtn" type="button">Browse…</button>
+                            </div>
+                        </div>
+                        <div class="notice-banner info" style="margin-top: 14px;">
+                            <svg class="notice-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                            <span>You can change this folder anytime in Settings or pick a specific folder for individual downloads.</span>
+                        </div>
+                    </div>
+
+
+                    <div class="onboarding-step-content" id="onboardStep3" style="display:none;">
+                        <div class="onboard-step-head">
+                            <h3>General Preferences</h3>
+                            <p>Configure download detection and interface settings.</p>
+                        </div>
+                        <div class="settings-grid" style="margin-top: 16px;">
+                            <label>Interface Theme</label>
+                            <select id="onboardTheme" class="form-select">
+                                <option value="dark">Dark Theme (Recommended)</option>
+                                <option value="light">Light Theme</option>
+                                <option value="system">System (Match OS)</option>
+                            </select>
+                            <label>Performance Mode</label>
+                            <div class="checkbox-control">
+                                <input type="checkbox" id="onboardReduceTransparency">
+                                <span class="settings-subtext">Disable transparency effects for lower CPU/GPU usage</span>
+                            </div>
+                            <label>Clipboard Monitoring</label>
+                            <div class="checkbox-control">
+                                <input type="checkbox" id="onboardDetectClipboard" checked>
+                                <span class="settings-subtext">Automatically detect copied download links and prompt to download</span>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="onboarding-step-content" id="onboardStep4" style="display:none;">
+                        <div class="onboard-hero">
+                            <div class="onboard-ready-badge">✓</div>
+                            <h2>Setup Complete</h2>
+                            <p class="onboard-subtitle">TurboDM is configured. Click "Add URL", drag and drop links into the window, or copy URLs to start downloading.</p>
+                        </div>
+                        <div class="notice-banner info" style="margin: 14px 0;">
+                            <svg class="notice-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5"></path><circle cx="8.5" cy="8.5" r="1.5"></circle><circle cx="8" cy="15" r="1"></circle><circle cx="14" cy="14" r="1.5"></circle></svg>
+                            <span>Tip: For private or login-restricted video downloads, configure your session in the Cookie Profiles manager.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer onboarding-footer">
+                    <button class="btn btn-ghost" id="onboardBackBtn" style="display:none;">← Back</button>
+                    <button class="btn btn-primary" id="onboardNextBtn">Get Started →</button>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal-backdrop" id="supportedSitesModal">
+            <div class="modal-card modal-lg sites-modal-card">
+                <div class="modal-header">
+                    <div class="modal-title-wrap">
+                        <span class="modal-header-icon icon-accent">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="2" y1="12" x2="22" y2="12"></line>
+                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                            </svg>
+                        </span>
+                        <div>
+                            <h3>Supported Video &amp; Audio Sites</h3>
+                            <span class="modal-subheading">1,700+ streaming platforms and services compatible with TurboDM</span>
+                        </div>
+                    </div>
+                    <button class="modal-close" id="supportedSitesCloseBtn" title="Close (Esc)" aria-label="Close">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+
+                <div class="modal-body sites-modal-body">
+                    <div class="sites-search-bar">
+                        <div class="search-input-wrap">
+                            <svg class="search-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                            <input type="text" id="sitesSearchInput" placeholder="Search 1,700+ sites (e.g. youtube, soundcloud, tiktok, twitch, x)..." autocomplete="off">
+                            <button class="search-clear-btn" id="sitesSearchClearBtn" style="display:none;" title="Clear">✕</button>
+                        </div>
+                    </div>
+
+                    <div class="sites-category-tabs" id="sitesCategoryTabs">
+                        <button class="category-pill active" data-category="all">All Sites</button>
+                        <button class="category-pill" data-category="popular">Popular</button>
+                        <button class="category-pill" data-category="video">Video</button>
+                        <button class="category-pill" data-category="audio">Music &amp; Audio</button>
+                        <button class="category-pill" data-category="social">Social Media</button>
+                        <button class="category-pill" data-category="streaming">Live &amp; Streaming</button>
+                    </div>
+
+                    <div class="sites-scroll-area">
+                        <div class="sites-section-title" id="sitesPopularTitle">
+                            <span>Popular Platforms</span>
+                            <span class="sites-count-badge" id="popularCountBadge">24 verified</span>
+                        </div>
+                        <div class="popular-sites-grid" id="popularSitesGrid"></div>
+
+                        <div class="sites-section-title" id="allExtractorsTitle" style="margin-top: 18px;">
+                            <span>All Supported Extractors</span>
+                            <span class="sites-count-badge" id="sitesCountBadge">1,755 services</span>
+                        </div>
+                        <div class="all-extractors-container" id="allExtractorsContainer"></div>
+                        <div class="sites-no-match" id="sitesNoMatch" style="display:none;">
+                            <span>No matching platforms found. Try another search term.</span>
+                        </div>
+                    </div>
+
+                    <div class="sites-modal-footer-note">
+                        <span>TurboDM routes links through yt-dlp with automatic format selection, audio extraction, and cookie profiles.</span>
+                        <a href="https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md" id="btnOpenYtdlpSitesDoc" class="btn-link" target="_blank" rel="noreferrer">Full yt-dlp Documentation ↗</a>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-primary" id="supportedSitesDoneBtn">Got It</button>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="context-menu" id="contextMenu">
+            <div class="context-item" id="ctxResume">
+                <svg class="ctx-svg" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                <span>Resume</span>
+            </div>
+            <div class="context-item" id="ctxPause">
+                <svg class="ctx-svg" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+                <span>Pause</span>
+            </div>
+            <div class="context-divider"></div>
+            <div class="context-item" id="ctxOpenFile">
+                <svg class="ctx-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8" fill="currentColor"></polygon></svg>
+                <span>Open File</span>
+            </div>
+            <div class="context-item" id="ctxOpenFolder">
+                <svg class="ctx-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                <span>Open Folder</span>
+            </div>
+            <div class="context-divider"></div>
+            <div class="context-item" id="ctxCopyUrl">
+                <svg class="ctx-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                <span>Copy Download Link</span>
+            </div>
+            <div class="context-divider"></div>
+            <div class="context-item danger" id="ctxDelete">
+                <svg class="ctx-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                <span>Delete</span>
+            </div>
+        </div>
+
+
+        <div class="drag-drop-overlay" id="dragDropOverlay">
+            <div class="drag-drop-card">
+                <div class="drag-drop-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                </div>
+                <h3>Drop Links to Download</h3>
+                <p>Release anywhere to start downloading URLs or <code>.txt</code> link lists</p>
+            </div>
+        </div>
+
+
+        <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+    </div>
+
+    <script src="supportedSites.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
