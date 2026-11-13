@@ -6,6 +6,7 @@
   "type": "module",
   "author": "Rishad (https://github.com/rishad0x)",
   "homepage": "https://github.com/rishad0x",
+  "license": "PolyForm-Noncommercial-1.0.0",
   "scripts": {
     "start": "electron .",
     "dev": "electron .",

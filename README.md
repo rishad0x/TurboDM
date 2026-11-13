@@ -116,3 +116,7 @@ bun run dist       # NSIS installer + portable exe into dist/
 ## Author
 
 Rishad — [github.com/rishad0x](https://github.com/rishad0x)
+
+## License
+
+TurboDM is licensed under the [PolyForm Noncommercial License 1.0.0](LICENSE) — free for personal, educational, and noncommercial use. Commercial use, selling, and resale are not permitted.
